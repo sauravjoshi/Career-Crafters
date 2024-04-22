@@ -1,94 +1,56 @@
 import React from 'react';
-import { Bar } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-const frameStyle = {
-  width: '100%',
-  height: '500px',
-  border: 'none',
-  borderRadius: '8px',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-};
-
-const frameStyle1 = {
-  width: '100%',
-  height: '900px',
-  border: 'none',
-  borderRadius: '8px',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-};
-
-const frameStyle2 = {
-  width: '100%',
-  height: '550px',
-  border: 'none',
-  borderRadius: '8px',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-};
-
-const sectionStyle = {
-  marginBottom: '32px',
-  padding: '20px',
-  backgroundColor: '#f0f8ff',
-  borderRadius: '8px',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-};
-
+interface VisualizationCardProps {
+  title: string;
+  src: string;
+  description: string;
+  styleDelay: number; // Additional prop for animation delay
+}
 
 const Visualizations: React.FC = () => {
+  const cards = [
+    { title: "Comparison Match Distances", src: "/comparison_match_distances.html", description: "Explore how match distances vary across different data points." },
+    { title: "Geo Coordinates", src: "/geo_coordinates.html", description: "View the geographic distribution of data points on a map." },
+    { title: "Geo Prevalent Jobs", src: "/geo_prevalent_jobs.html", description: "Discover which jobs are most prevalent in various regions." },
+    { title: "Geo Remote Onsite", src: "/geo_remote_onsite.html", description: "Analyze the ratio of remote to onsite jobs across different areas." },
+    { title: "Heat Map", src: "/heatmap.html", description: "Examine the intensity of data across different zones with a heat map." },
+    { title: "Visualization 6", src: "/top_skills_plot.png", description: "Analytical review of top skills required across industries." },
+    { title: "Visualization 7", src: "/top_skills_top_job_titles.png", description: "Correlation between top skills and job titles." },
+    { title: "Visualization 8", src: "/t-SNE.png", description: "t-SNE visualization for dimensionality reduction analysis." },
+    { title: "Visualization 9", src: "/visualization_9.html", description: "Advanced data interaction in a dynamic environment." }
+  ];
+
   return (
-    <div className="p-8" style={{ backgroundColor: '#87CEEB', color: '#000', minHeight: '100vh' }}>
-      <h1 className="text-2xl font-bold">Visualizations</h1>
-      <p className="mt-2">This page will display various data visualizations.</p>
-      {/* Viz eMB */}
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold">Comparison Match Distances</h2>
-        <ComparisonMatchDistances />
-      </div>
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold">Geo Coordinates</h2>
-        <GeoCoordinates />
-      </div>
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold">Geo Prevalent Jobs</h2>
-        <GeoPrevalentJobs />
-      </div>
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold">Geo Remote Onsite</h2>
-        <GeoRemoteOnsite />
-      </div>
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold">Heat Map</h2>
-        <HeatMap />
+    <div className="p-8 text-black min-h-screen bg-gray-100">
+      <h1 className="text-3xl font-bold text-center mb-12">Visualizations</h1>
+      <div className="grid grid-cols-3 gap-8">
+        {cards.map((card, index) => (
+          <VisualizationCard
+            key={index}
+            title={card.title}
+            src={card.src}
+            description={card.description}
+            styleDelay={index * 0.1} // Staggered animation delay
+          />
+        ))}
       </div>
     </div>
   );
 };
 
-const ComparisonMatchDistances = () => <iframe src="/comparison_match_distances.html" title="Comparison Match Distances" style={frameStyle} sandbox="allow-scripts allow-same-origin" />;
-const GeoCoordinates = () => <iframe src="/geo_coordinates.html" title="Geo Coordinates" style={frameStyle} sandbox="allow-scripts allow-same-origin" />;
-const GeoPrevalentJobs = () => <iframe src="/geo_prevalent_jobs.html" title="Geo Prevalent Jobs" style={frameStyle1} sandbox="allow-scripts allow-same-origin" />;
-const GeoRemoteOnsite = () => <iframe src="/geo_remote_onsite.html" title="Geo Remote Onsite" style={frameStyle2} sandbox="allow-scripts allow-same-origin" />;
-const HeatMap = () => <iframe src="/heatmap.html" title="Heat Map" style={frameStyle} sandbox="allow-scripts allow-same-origin" />;
-
-
+const VisualizationCard = ({ title, src, description, styleDelay }: VisualizationCardProps) => {
+  return (
+    <a href={src} target="_blank" className="block transform transition duration-500 hover:scale-105 hover:shadow-2xl" style={{
+      animation: `spiralIn 0.8s ${styleDelay}s both` // Applying animation with delay
+    }}>
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="px-6 py-4">
+          <h2 className="font-semibold text-xl text-gray-800">{title}</h2>
+          <p className="text-gray-600 text-sm mt-2">{description}</p>
+        </div>
+      </div>
+    </a>
+  );
+};
 
 export default Visualizations;
-
