@@ -12,6 +12,17 @@ code {
     monospace;
 }
 
+@keyframes spiralIn {
+  0% {
+    transform: rotate(360deg) scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
