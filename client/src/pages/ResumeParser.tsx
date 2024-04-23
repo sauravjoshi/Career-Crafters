@@ -23,6 +23,7 @@ const ResumeParser: React.FC = () => {
   const [error, setError] = useState("");
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const [reducedVectors, setReducedVectors] = useState([]);
+  const [resumeUploaded, setResumeUploaded] = useState(false);
 
   const handleRowClick = (index: number) => {
     const newExpandedRows = new Set(expandedRows);
@@ -39,8 +40,19 @@ const ResumeParser: React.FC = () => {
     const file = acceptedFiles[0];
     if (file) {
       handleUpload(file);
+      setResumeUploaded(true);
     }
   }, []);
+
+  const handleFileUpload = (files: any) => {
+    // Logic to handle file upload
+    console.log(files);
+    setResumeUploaded(true);
+  };
+
+  const handleNewUpload = () => {
+    setResumeUploaded(false);
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFile(event.target.files?.[0] || null);
@@ -64,6 +76,7 @@ const ResumeParser: React.FC = () => {
       }
 
       let data = await response.json();
+
       setReducedVectors(data.reduced_vectors);
 
       const jobDetails = data.job_details.map((item: any) => ({
@@ -81,7 +94,6 @@ const ResumeParser: React.FC = () => {
         "Job Summary": item.job_summary,
       }));
       setResumeData(jobDetails);
-      setResumeData(jobDetails);
       setError("");
     } catch (err) {
       setError((err as Error).message || "Something went wrong");
@@ -92,102 +104,166 @@ const ResumeParser: React.FC = () => {
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
-      <div className="mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800">Resume Parser</h1>
-        <p className="mt-2 text-lg text-gray-600">
-          This page will handle the parsing and analysis of resumes. Upload your
-          document and let the system analyze the content.
-        </p>
-
-        <div
-          {...getRootProps()}
-          className="mt-6 bg-white p-6 shadow-lg rounded-lg cursor-pointer transition duration-300 ease-in-out hover:shadow-xl"
-        >
-          <div className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              stroke="currentColor"
-              fill="none"
-              viewBox="0 0 48 48"
-              aria-hidden="true"
-            >
-              <path
-                d="M28 8H12a4 4 0 00-4 4v24a4 4 0 004 4h16m8-12l8-8-8-8m-8 8h18"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <label
-              htmlFor="file-upload"
-              className="block mt-2 text-sm font-medium text-gray-900"
-            >
-              Upload your resume:
-            </label>
-            <input {...getInputProps()} className="sr-only" />
-            <p className="mt-1 text-sm text-gray-900">
-              Drag 'n' drop some files here, or click to select files
-            </p>
-            {isDragActive ? (
-              <p className="text-sm text-blue-500">Drop the files here ...</p>
-            ) : (
-              <p className="text-sm text-gray-600">PDF, DOC, DOCX up to 10MB</p>
-            )}
-          </div>
+      {isLoading && (
+        <div className="mt-6 flex justify-center items-center">
+          <div className="spinner ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+          <p className="text-lg text-gray-600">Processing...</p>
         </div>
+      )}
+      {error && <p className="mt-4 text-red-500">{error}</p>}
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-gray-800">Resume Parser</h1>
+        {!isLoading && resumeUploaded && (
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+            onClick={handleNewUpload}
+          >
+            Upload New Resume
+          </button>
+        )}
+      </div>
+      <p className="mt-2 text-lg text-gray-600">
+        Upload your Resume and let the system analyze the content.
+      </p>
 
-        {isLoading && (
-          <div className="mt-6 flex justify-center items-center">
-            <div className="spinner ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
-            <p className="text-lg text-gray-600">Processing...</p>
+      <div className="min-h-96 mb-8">
+        {!resumeUploaded ? (
+          <div
+            {...getRootProps()}
+            className="mt-6 bg-white p-6 shadow-lg rounded-lg cursor-pointer transition duration-300 ease-in-out hover:shadow-xl"
+          >
+            <div className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg">
+              <svg
+                className="mx-auto h-12 w-12 text-gray-400"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 48 48"
+                aria-hidden="true"
+              >
+                <path
+                  d="M28 8H12a4 4 0 00-4 4v24a4 4 0 004 4h16m8-12l8-8-8-8m-8 8h18"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <label
+                htmlFor="file-upload"
+                className="block mt-2 text-sm font-medium text-gray-900"
+              >
+                Upload your resume:
+              </label>
+              <input {...getInputProps()} className="sr-only" />
+              <p className="mt-1 text-sm text-gray-900">
+                Drag 'n' drop some files here, or click to select files
+              </p>
+              {isDragActive ? (
+                <p className="text-sm text-blue-500">Drop the files here ...</p>
+              ) : (
+                <p className="text-sm text-gray-600">
+                  PDF, DOC, DOCX up to 10MB
+                </p>
+              )}
+            </div>
           </div>
+        ) : (
+          !isLoading && (
+            <>
+              <div className="flex justify-between items-center space-x-4">
+                <div className="w-1/2 p-4 min-h-96">
+                  {reducedVectors.length > 0 && (
+                    <Plot
+                      data={[
+                        {
+                          x: reducedVectors.map((item) => item["Component 1"]),
+                          y: reducedVectors.map((item) => item["Component 2"]),
+                          z: reducedVectors.map((item) => item["Component 3"]),
+                          mode: "markers",
+                          type: "scatter3d",
+                          text: reducedVectors.map((item) => item["Job Title"]),
+                          marker: {
+                            size: 8,
+                            opacity: 0.8,
+                            color: reducedVectors.map((item) => {
+                              if (item["Type"] === "Resume") {
+                                return "red";
+                              } else if (item["Type"] === "Recommended Job") {
+                                return "blue";
+                              } else {
+                                return "gray";
+                              }
+                            }),
+                          },
+                        },
+                      ]}
+                      layout={{
+                        title:
+                          "3D Visualization: Resume vs Recommended Jobs & Non-Recommended Jobs",
+                        scene: {
+                          xaxis: { title: "Component 1" },
+                          yaxis: { title: "Component 2" },
+                          zaxis: { title: "Component 3" },
+                        },
+                      }}
+                      config={{
+                        responsive: true, // Make the plot responsive
+                      }}
+                    />
+                  )}
+                </div>
+                <div className="w-1/2 p-4 min-h-96">
+                  {reducedVectors.length > 0 && (
+                    <Plot
+                      data={[
+                        {
+                          x: reducedVectors.map((item) => item["Component 1"]),
+                          y: reducedVectors.map((item) => item["Component 2"]),
+                          z: reducedVectors.map((item) => item["Component 3"]),
+                          mode: "markers",
+                          type: "scatter3d",
+                          text: reducedVectors.map((item) => item["Job Title"]),
+                          marker: {
+                            size: 8,
+                            opacity: 0.8,
+                            color: reducedVectors.map((item) => {
+                              if (item["Type"] === "Resume") {
+                                return "red";
+                              } else if (item["Type"] === "Recommended Job") {
+                                return "blue";
+                              } else {
+                                return "gray";
+                              }
+                            }),
+                          },
+                        },
+                      ]}
+                      layout={{
+                        title:
+                          "3D Visualization: Resume vs Recommended Jobs & Non-Recommended Jobs",
+                        scene: {
+                          xaxis: { title: "Component 1" },
+                          yaxis: { title: "Component 2" },
+                          zaxis: { title: "Component 3" },
+                        },
+                      }}
+                      config={{
+                        responsive: true, // Make the plot responsive
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            </>
+          )
         )}
-        {error && <p className="mt-4 text-red-500">{error}</p>}
+      </div>
 
-        {reducedVectors.length > 0 && (
-          <Plot
-            data={[
-              {
-                x: reducedVectors.map((item) => item["Component 1"]),
-                y: reducedVectors.map((item) => item["Component 2"]),
-                z: reducedVectors.map((item) => item["Component 3"]),
-                mode: "markers",
-                type: "scatter3d",
-                text: reducedVectors.map((item) => item["Job Title"]),
-                marker: {
-                  size: 8,
-                  opacity: 0.8,
-                  color: reducedVectors.map((item) => {
-                    if (item["Type"] === "Resume") {
-                      return "red";
-                    } else if (item["Type"] === "Recommended Job") {
-                      return "blue";
-                    } else {
-                      return "gray";
-                    }
-                  }),
-                },
-              },
-            ]}
-            layout={{
-              title:
-                "3D Visualization: Resume vs Recommended Jobs & Non-Recommended Jobs",
-              width: 1000, // Adjust the width of the plot
-              height: 800,
-              scene: {
-                xaxis: { title: "Component 1" },
-                yaxis: { title: "Component 2" },
-                zaxis: { title: "Component 3" },
-              },
-              margin: { l: 50, r: 50, b: 50, t: 50 },
-            }}
-            config={{
-              responsive: true, // Make the plot responsive
-            }}
-          />
-        )}
+      <div>
         {resumeData.length > 0 && (
           <div className="mt-4 overflow-x-auto shadow-lg rounded-lg">
+          <p className="mt-2 mb-4 text-lg text-gray-600">
+            Top Job Matches
+          </p>
             <table className="w-full text-sm text-left text-gray-500">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                 <tr>
