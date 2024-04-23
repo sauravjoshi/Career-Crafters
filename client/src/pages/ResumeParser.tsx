@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import Plot from "react-plotly.js";
 
 interface JobData {
   Company: string;
@@ -21,6 +22,7 @@ const ResumeParser: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+  const [reducedVectors, setReducedVectors] = useState([]);
 
   const handleRowClick = (index: number) => {
     const newExpandedRows = new Set(expandedRows);
@@ -62,7 +64,9 @@ const ResumeParser: React.FC = () => {
       }
 
       let data = await response.json();
-      data = data.map((item: any) => ({
+      setReducedVectors(data.reduced_vectors);
+
+      const jobDetails = data.job_details.map((item: any) => ({
         Company: item.company,
         City: item.city,
         "Job Title": item.job_title,
@@ -76,8 +80,8 @@ const ResumeParser: React.FC = () => {
         "Job Skills": item.job_skills,
         "Job Summary": item.job_summary,
       }));
-      setResumeData(data);
-      setResumeData(data);
+      setResumeData(jobDetails);
+      setResumeData(jobDetails);
       setError("");
     } catch (err) {
       setError((err as Error).message || "Something went wrong");
@@ -139,6 +143,49 @@ const ResumeParser: React.FC = () => {
           </div>
         )}
         {error && <p className="mt-4 text-red-500">{error}</p>}
+
+        {reducedVectors.length > 0 && (
+          <Plot
+            data={[
+              {
+                x: reducedVectors.map((item) => item["Component 1"]),
+                y: reducedVectors.map((item) => item["Component 2"]),
+                z: reducedVectors.map((item) => item["Component 3"]),
+                mode: "markers",
+                type: "scatter3d",
+                text: reducedVectors.map((item) => item["Job Title"]),
+                marker: {
+                  size: 8,
+                  opacity: 0.8,
+                  color: reducedVectors.map((item) => {
+                    if (item["Type"] === "Resume") {
+                      return "red";
+                    } else if (item["Type"] === "Recommended Job") {
+                      return "blue";
+                    } else {
+                      return "gray";
+                    }
+                  }),
+                },
+              },
+            ]}
+            layout={{
+              title:
+                "3D Visualization: Resume vs Recommended Jobs & Non-Recommended Jobs",
+              width: 1000, // Adjust the width of the plot
+              height: 800,
+              scene: {
+                xaxis: { title: "Component 1" },
+                yaxis: { title: "Component 2" },
+                zaxis: { title: "Component 3" },
+              },
+              margin: { l: 50, r: 50, b: 50, t: 50 },
+            }}
+            config={{
+              responsive: true, // Make the plot responsive
+            }}
+          />
+        )}
         {resumeData.length > 0 && (
           <div className="mt-4 overflow-x-auto shadow-lg rounded-lg">
             <table className="w-full text-sm text-left text-gray-500">
