@@ -4,8 +4,6 @@ from gensim.models import Word2Vec
 import numpy as np
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
-import nltk
-import spacy
 from pyresparser import ResumeParser
 import os
 from flask_cors import CORS
@@ -14,14 +12,7 @@ app = Flask(__name__)
 
 CORS(app)
 
-# Load necessary NLTK resources
-nltk.download('words')
-nltk.download('stopwords')
-spacy.cli.download("en_core_web_sm")
-nlp = spacy.load("en_core_web_sm")
-
 w2v_model = Word2Vec.load("./model_vectors/word2vec.model")
-
 df_master = pd.read_csv("../data/text_processed.csv")
 
 columns_needed = [
