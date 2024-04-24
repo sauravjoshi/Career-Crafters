@@ -112,13 +112,6 @@ const ResumeParser: React.FC = () => {
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
-      {isLoading && (
-        <div className="mt-6 flex justify-center items-center">
-          <div className="spinner ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
-          <p className="text-lg text-gray-600">Processing...</p>
-        </div>
-      )}
-      {error && <p className="mt-4 text-red-500">{error}</p>}
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-800">Resume Parser</h1>
         {!isLoading && resumeUploaded && (
@@ -133,6 +126,13 @@ const ResumeParser: React.FC = () => {
       <p className="mt-2 text-lg text-gray-600">
         Upload your Resume and let the system analyze the content.
       </p>
+
+      {isLoading && (
+        <div className="mt-6 flex justify-center items-center">
+          <div className="spinner animate-spin ease-linear rounded-full border-4 border-t-4 border-gray-300 border-t-blue-500 h-12 w-12 mb-4"></div>
+        </div>
+      )}
+      {error && <p className="mt-4 text-red-500">{error}</p>}
 
       <div className="min-h-96 mb-8">
         {!resumeUploaded ? (
@@ -177,8 +177,8 @@ const ResumeParser: React.FC = () => {
         ) : (
           !isLoading && (
             <>
-              <div className="flex justify-between items-center space-x-4">
-                <div className="w-3/4 p-2 min-h-96">
+              <div className="grid grid-cols-4 gap-4">
+                <div className="col-span-2 w-full min-h-96">
                   {" "}
                   {/* Increased the width to 2/3 and reduced padding */}
                   {reducedVectors.length > 0 && (
@@ -207,10 +207,9 @@ const ResumeParser: React.FC = () => {
                         },
                       ]}
                       layout={{
-                        width: 800,
                         height: 500,
                         title:
-                          "3D Visualization with PCA: Resume vs Recommended Jobs & Non-Recommended Jobs",
+                          "Resume vs Recommended Jobs & Non-Recommended Jobs",
                         scene: {
                           xaxis: { title: "Component 1" },
                           yaxis: { title: "Component 2" },
@@ -224,7 +223,7 @@ const ResumeParser: React.FC = () => {
                     />
                   )}
                 </div>
-                <div className="w-3/4 p-2 min-h-96">
+                <div className="col-span-2 w-full min-h-96">
                   {topSkills && topSkills.length > 0 && (
                     <Plot
                       data={[
@@ -241,7 +240,6 @@ const ResumeParser: React.FC = () => {
                         },
                       ]}
                       layout={{
-                        width: 800,
                         height: 500,
                         title: "Top Skills for Recommended Jobs",
                         xaxis: {
