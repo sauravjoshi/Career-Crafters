@@ -8,23 +8,30 @@ function App() {
     <Router>
       <div>
         <nav className="bg-gray-800 p-4 text-white">
-          <ul className="flex justify-center items-center space-x-60">
-            <li>
-              <Link to="/" className="hover:underline">
-                Resume Parser
+          <div className="flex justify-between items-center">
+            <div>
+              <Link to="/" className="text-lg font-bold hover:underline">
+                Career Crafters
               </Link>
-            </li>
-            <li>
-              <Link to="/visualizations" className="hover:underline">
-                Visualizations
-              </Link>
-            </li>
-            <li>
-              <Link to="/about" className="hover:underline">
-                About
-              </Link>
-            </li>
-          </ul>
+            </div>
+            <ul className="flex space-x-60">
+              <li>
+                <Link to="/" className="hover:underline">
+                  Resume Parser
+                </Link>
+              </li>
+              <li>
+                <Link to="/visualizations" className="hover:underline">
+                  Visualizations
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="hover:underline">
+                  About
+                </Link>
+              </li>
+            </ul>
+          </div>
         </nav>
         <Routes>
           <Route path="/" element={<ResumeParser />} />
