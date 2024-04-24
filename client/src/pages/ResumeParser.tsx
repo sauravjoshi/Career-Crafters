@@ -58,6 +58,7 @@ const ResumeParser: React.FC = () => {
 
   const handleNewUpload = () => {
     setResumeUploaded(false);
+    setResumeData([]);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
