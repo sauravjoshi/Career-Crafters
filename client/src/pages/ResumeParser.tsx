@@ -16,6 +16,11 @@ interface JobData {
   "Job Summary": string;
 }
 
+type Skill = {
+  skill: string;
+  frequency: number;
+};
+
 const ResumeParser: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [resumeData, setResumeData] = useState<JobData[]>([]);
@@ -23,6 +28,7 @@ const ResumeParser: React.FC = () => {
   const [error, setError] = useState("");
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const [reducedVectors, setReducedVectors] = useState([]);
+  const [topSkills, setTopSkills] = useState<Skill[]>([]);
   const [resumeUploaded, setResumeUploaded] = useState(false);
 
   const handleRowClick = (index: number) => {
@@ -78,6 +84,7 @@ const ResumeParser: React.FC = () => {
       let data = await response.json();
 
       setReducedVectors(data.reduced_vectors);
+      setTopSkills(data.top_skills);
 
       const jobDetails = data.job_details.map((item: any) => ({
         Company: item.company,
@@ -170,7 +177,9 @@ const ResumeParser: React.FC = () => {
           !isLoading && (
             <>
               <div className="flex justify-between items-center space-x-4">
-                <div className="w-1/2 p-4 min-h-96">
+                <div className="w-3/4 p-2 min-h-96">
+                  {" "}
+                  {/* Increased the width to 2/3 and reduced padding */}
                   {reducedVectors.length > 0 && (
                     <Plot
                       data={[
@@ -197,58 +206,58 @@ const ResumeParser: React.FC = () => {
                         },
                       ]}
                       layout={{
+                        width: 800,
+                        height: 500,
                         title:
-                          "3D Visualization: Resume vs Recommended Jobs & Non-Recommended Jobs",
+                          "3D Visualization with PCA: Resume vs Recommended Jobs & Non-Recommended Jobs",
                         scene: {
                           xaxis: { title: "Component 1" },
                           yaxis: { title: "Component 2" },
                           zaxis: { title: "Component 3" },
                         },
+                        margin: { l: 20, r: 20, b: 20, t: 50 }, // Reduced margins
                       }}
                       config={{
-                        responsive: true, // Make the plot responsive
+                        responsive: true, // Makes the plot responsive
                       }}
                     />
                   )}
                 </div>
-                <div className="w-1/2 p-4 min-h-96">
-                  {reducedVectors.length > 0 && (
+                <div className="w-3/4 p-2 min-h-96">
+                  {topSkills && topSkills.length > 0 && (
                     <Plot
                       data={[
                         {
-                          x: reducedVectors.map((item) => item["Component 1"]),
-                          y: reducedVectors.map((item) => item["Component 2"]),
-                          z: reducedVectors.map((item) => item["Component 3"]),
-                          mode: "markers",
-                          type: "scatter3d",
-                          text: reducedVectors.map((item) => item["Job Title"]),
+                          x: topSkills.map((skill) => skill.skill),
+                          y: topSkills.map((skill) => skill.frequency),
+                          type: "bar",
+                          text: topSkills.map((skill) =>
+                            skill.frequency.toString()
+                          ), // To show frequency values on hover
                           marker: {
-                            size: 8,
-                            opacity: 0.8,
-                            color: reducedVectors.map((item) => {
-                              if (item["Type"] === "Resume") {
-                                return "red";
-                              } else if (item["Type"] === "Recommended Job") {
-                                return "blue";
-                              } else {
-                                return "gray";
-                              }
-                            }),
+                            color: "#1f77b4", // Customize color
                           },
                         },
                       ]}
                       layout={{
-                        title:
-                          "3D Visualization: Resume vs Recommended Jobs & Non-Recommended Jobs",
-                        scene: {
-                          xaxis: { title: "Component 1" },
-                          yaxis: { title: "Component 2" },
-                          zaxis: { title: "Component 3" },
+                        width: 800,
+                        height: 500,
+                        title: "Top Skills for Recommended Jobs",
+                        xaxis: {
+                          title: "Skills",
                         },
+                        yaxis: {
+                          title: "Frequency",
+                          range: [
+                            0,
+                            Math.max(
+                              ...topSkills.map((skill) => skill.frequency)
+                            ) + 1,
+                          ], // Ensure proper y-axis range
+                        },
+                        margin: { l: 40, r: 20, b: 60, t: 40 }, // Set appropriate margins
                       }}
-                      config={{
-                        responsive: true, // Make the plot responsive
-                      }}
+                      config={{ responsive: true }}
                     />
                   )}
                 </div>
@@ -261,9 +270,7 @@ const ResumeParser: React.FC = () => {
       <div>
         {resumeData.length > 0 && (
           <div className="mt-4 overflow-x-auto shadow-lg rounded-lg">
-          <p className="mt-2 mb-4 text-lg text-gray-600">
-            Top Job Matches
-          </p>
+            <p className="mt-2 mb-4 text-lg text-gray-600">Top Job Matches</p>
             <table className="w-full text-sm text-left text-gray-500">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                 <tr>
