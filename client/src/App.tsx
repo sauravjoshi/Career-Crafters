@@ -14,7 +14,7 @@ function App() {
                 Career Crafters
               </Link>
             </div>
-            <ul className="flex space-x-60">
+            <ul className="flex space-x-16">
               <li>
                 <Link to="/" className="hover:underline">
                   Resume Parser
@@ -26,7 +26,7 @@ function App() {
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:underline">
+                <Link to="/about" className="hover:underline mr-32">
                   About
                 </Link>
               </li>
