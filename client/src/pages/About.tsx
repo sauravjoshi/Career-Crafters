@@ -44,39 +44,6 @@ const About: React.FC = () => {
       </section>
 
       <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Methodology</h2>
-        <p className="text-lg text-gray-800">
-          Our methodology involves several key phases:
-        </p>
-        <ul className="list-disc pl-8 text-lg text-gray-800">
-          <li>Data Collection and Preparation: Comprehensive scraping of job listings from LinkedIn, followed by meticulous data cleaning and exploratory data analysis.</li>
-          <li>Text Processing: Application of NLP techniques including tokenization, normalization, and vectorization.</li>
-          <li>Modeling: Utilization of K-Nearest Neighbors and other algorithms to develop a model that matches resumes to job descriptions effectively.</li>
-        </ul>
-      </section>
-
-      <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Results and Visualizations</h2>
-        <p className="text-lg text-gray-800">
-          Our results showcase dynamic visualizations of job distribution and skills demand, providing clear guidance to job seekers on market trends and necessary skills.
-        </p>
-      </section>
-
-      <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Future Directions</h2>
-        <p className="text-lg text-gray-800">
-          We plan to integrate advanced models like Word2Vec and develop a dynamic web application to enhance the user experience further.
-        </p>
-      </section>
-
-      <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Challenges and Learnings</h2>
-        <p className="text-lg text-gray-800">
-          The project presented challenges in data quality and modeling complexity, which were overcome by adopting robust data cleaning processes and advanced NLP techniques.
-        </p>
-      </section>
-
-      <section className="mb-6">
         <h2 className="text-2xl font-semibold mb-4">Project Impact</h2>
         <p className="text-lg text-gray-800">
           Career Crafters aims to revolutionize how job seekers approach the job market, making the search more targeted and effective. Our system aligns with real-world hiring patterns, making a significant impact on the job search process.
