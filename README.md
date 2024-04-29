@@ -38,7 +38,7 @@ These instructions will get you a copy of the project up and running on your loc
     pip install -r requirements.txt
     ```
 
-4. **Start the server
+4. **Start the server**
     ```bash
     flask run
     ```
